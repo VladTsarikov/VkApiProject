@@ -30,12 +30,17 @@ public class VkontakteTest extends BaseTest {
         logStep(1,"OPENING MAIN USER PAGE..");
         MainUserPage mainUserPage = new MainUserPage();
         mainUserPage.addTextPost(data,"GET");
-        assertTrue(mainUserPage.verifyPostForTextAndNecessaryUser(mainUserPage.getLastPostId(),data,mainUserPage.leftMainMenu.getCurrentUserId()));
-       // mainUserPage.editPost();
-        mainUserPage.addComment(mainUserPage.leftMainMenu.getCurrentUserId(),mainUserPage.getLastPostId(),data2);
-        assertTrue(mainUserPage.verifyComment(mainUserPage.getLastPostId(),mainUserPage.leftMainMenu.getCurrentUserId()));
-        mainUserPage.addPostLike(mainUserPage.getLastPostId());
-        mainUserPage.verifyIsPostLiked(mainUserPage.getLastPostId(),mainUserPage.leftMainMenu.getCurrentUserId());
+        //assertTrue(mainUserPage.vefifyPostForNecessaryText(mainUserPage.getLastPostId(),data));
+        //assertTrue(mainUserPage.verifyPostForNecessaryUser(mainUserPage.getLastPostId(),mainUserPage.leftMainMenu.getCurrentUserId()));
+        mainUserPage.editPost();
+        //assertTrue(mainUserPage.vefifyPostForNecessaryText(mainUserPage.getLastPostId(),data));
+        //assertTrue(mainUserPage.verufyPostForCorrectPhoto());
+        //mainUserPage.addComment(mainUserPage.leftMainMenu.getCurrentUserId(),mainUserPage.getLastPostId(),data2);
+        //assertTrue(mainUserPage.verifyComment(mainUserPage.getLastPostId(),mainUserPage.leftMainMenu.getCurrentUserId()));
+        //mainUserPage.addPostLike(mainUserPage.getLastPostId());
+        //mainUserPage.verifyIsPostLiked(mainUserPage.getLastPostId(),mainUserPage.leftMainMenu.getCurrentUserId());
+        //mainUserPage.deletePost(mainUserPage.leftMainMenu.getCurrentUserId(),mainUserPage.getLastPostId());
+        //assertFalse(mainUserPage.verifyIsPostDelete(mainUserPage.leftMainMenu.getCurrentUserId(),mainUserPage.getLastPostId()));
 
     }
 
