@@ -13,5 +13,4 @@ public enum MainLeftMenuLabel {
     public String getMainLeftMenuLabelCategory() {
         return category;
     }
-
 }

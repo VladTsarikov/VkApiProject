@@ -2,7 +2,7 @@ package vk.pages;
 
 import org.openqa.selenium.By;
 import vk.pages.menu.LeftMainMenu;
-import webdriver.BaseForm;;
+import webdriver.BaseForm;
 
 public class NewsPage extends BaseForm {
 
@@ -12,7 +12,4 @@ public class NewsPage extends BaseForm {
     public NewsPage() {
         super(By.xpath(MAIN_LOCATOR), "Vkontakte News Page");
     }
-
-
-
 }

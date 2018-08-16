@@ -8,7 +8,6 @@ public class RegularExpFinder {
     private static String value;
 
     public static String findByRegularExp(String string, String regExp){
-
         pattern = Pattern.compile(regExp);
         matcher = pattern.matcher(string);
         matcher.find();
