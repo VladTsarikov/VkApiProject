@@ -7,7 +7,7 @@ import webdriver.elements.*;
 public class SignInPage extends BaseForm {
 
     private static final String MAIN_LOCATOR = "//button[contains(@id,'login')]";
-    private final Button btnSignIn = new Button(By.xpath("//button[contains(@id,'login')]"), "SignIn Button");
+    private final Button btnSignIn = new Button(By.xpath(MAIN_LOCATOR), "SignIn Button");
     private final TextBox txbUserEmail = new TextBox(By.xpath("//input[@name='email']"), "Email Field");
     private final TextBox txbUserPassword = new TextBox(By.xpath("//input[@name='pass']"), "Password Field");
 

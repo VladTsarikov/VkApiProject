@@ -10,293 +10,89 @@ import java.io.*;
 import java.net.*;
 
 public class VkApiUtils {
+
     private HttpURLConnection connection;
-    private String requestTemplate = "https://api.vk.com/method/%s&v=%s";
+    private int responseCode = 0;
+    private final static String GET_REQUEST_TYPE = "GET";
+    private final static String CONTENT_TYPE_NAME = "Content-Type";
+    private final static String PHOTO_CONTENT_TYPE_NAME = "image/jpeg";
+    private final static String PHOTO_BINARY_BODY_NAME = "photo";
+    private final static String INPUT_STREAM_ENCODING = "UTF-8";
+    private final static String GET_CONTENT_TYPE = "multipart/form-data";
+    private final static String VK_API_REQUEST_VERSION = "5.80";
+    private final static String REPLACEMENT = "";
+    private final static String VK_API_REQUEST_URL = "https://api.vk.com/method/";
+    private CloseableHttpResponse response = null;
+    private CloseableHttpClient httpClient = HttpClients.createDefault();
+    private InputStream is = null;
+    private String results = null;
 
-    public HttpURLConnection getConnection(String request, String requesstType) {
-        switch (requesstType) {
-            case "GET":
-                try {
-                    sentGet(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "POST":
-                try {
-                    sentPost(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-
-//        try {
-//            URL url = new URL(request);
-//
-//            connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod(requesstType);
-//            connection.setRequestProperty("Content-Type", "multipart/form-data");
-//            //connection.setRequestProperty("Content-Length", String.valueOf(10000));
-//            connection.connect();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        return connection;
-
+    public String sendGetRequest(String requestUrl){
+        try {
+            URL obj = new URL(requestUrl);
+            connection = (HttpURLConnection) obj.openConnection();
+            connection.setRequestMethod(GET_REQUEST_TYPE);
+            connection.setRequestProperty(CONTENT_TYPE_NAME, GET_CONTENT_TYPE);
+            connection.connect();
+        } catch (IOException e) { e.printStackTrace(); }
+        return obtainGetResponse(connection);
     }
 
-    public String getRequestTemplate() {
-        return requestTemplate;
+    public String sendPostPhotoRequest(String url, String filePath) {
+            HttpPost httpPost = new HttpPost(url);
+            File fileToUpload = new File(filePath);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addBinaryBody(PHOTO_BINARY_BODY_NAME, fileToUpload, ContentType.create(PHOTO_CONTENT_TYPE_NAME), filePath);
+            HttpEntity reqEntity = builder.build();
+            httpPost.setEntity(reqEntity);
+            getPostResponse(httpPost);
+            return results;
     }
 
-    public String getResponse(HttpURLConnection connection){
-//        InputStream in = null;
-//        int status = 0;
-//        try {
-//            status = connection.getResponseCode();
-//            if (status != HttpURLConnection.HTTP_OK) {
-//                in = connection.getErrorStream();
-//            } else {
-//                in = connection.getInputStream();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return convertStreamToString(in);
-
-
-        int responseCode = 0;
+    private String obtainGetResponse(HttpURLConnection connection){
         StringBuffer response = new StringBuffer();
         try {
             responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                //in.close();
+                while ((inputLine = in.readLine()) != null) { response.append(inputLine); }
+                in.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
         return response.toString();
-
     }
 
-
-    public void sentGet(String requestUrl) throws IOException {
-
-        URL obj = new URL(requestUrl);
-        connection = (HttpURLConnection) obj.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "multipart/form-data");
-        connection.connect();
-
-    }
-
-
-    public void sentPost(String requestUrl) throws IOException {
-
-        URL url = new URL(requestUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        OutputStream os = con.getOutputStream();
-        //os.write(requestParam.getBytes());
-        os.flush();
-        os.close();
-
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://www.example.com");
-
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.addBinaryBody("file", new File("test.txt"),
-                ContentType.APPLICATION_OCTET_STREAM, "file.ext");
-
-        HttpEntity multipart = builder.build();
-        httpPost.setEntity(multipart);
-
-        CloseableHttpResponse response = client.execute(httpPost);
-
-        client.close();
-
-
-    }
-
-    public String getMultipartEntity(String url, String filePath) throws IOException {
-
-
-//        FileBody fileBody = new FileBody(file, ContentType.DEFAULT_BINARY);
-//
-//        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-//        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-//        builder.addPart("file", fileBody);
-//        HttpEntity entity = builder.build();
-//
-//        HttpPost post = new HttpPost(url);
-//        post.setEntity(entity);
-//
-//        HttpClient client = HttpClientBuilder.create().build();
-//        try {
-//            client.execute(post);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        HttpResponse response = null;
-//        try {
-//            response = client.execute(request);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("INFO >>> Response from API was: " + response.toString());
-
-
-//        HttpResponse response = null;
-//        try {
-//            response = client.execute(post);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        int httpStatus = response.getStatusLine().getStatusCode();
-//        InputStream responseMsg = null;
-//        try {
-//            responseMsg = response.getEntity().getContent();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        if (httpStatus < 200 || httpStatus > 300) {
-//            try {
-//                throw new IOException("HTTP " + httpStatus + " - Error during upload of file: " + responseMsg);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        System.out.println("22222"+responseMsg);
-
-
-        CloseableHttpResponse response = null;
-        InputStream is = null;
-        String results = null;
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+    private void getPostResponse(HttpPost httppost){
         try {
-            HttpPost httppost = new HttpPost(url);
-            //FileBody fileBody = new FileBody(file, ContentType.MULTIPART_FORM_DATA);
-            File file1 = new File(filePath).getAbsoluteFile();
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            builder.addBinaryBody("photo", file1,ContentType.create("image/jpeg"), filePath);
-            HttpEntity reqEntity = builder.build();
-            httppost.setEntity(reqEntity);
-            response = httpclient.execute(httppost);
-
+            response = httpClient.execute(httppost);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 is = entity.getContent();
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(is, writer, "UTF-8");
+                IOUtils.copy(is, writer, INPUT_STREAM_ENCODING);
                 results = writer.toString();
             }
-
-        } finally {
+        } catch (IOException e1) { e1.printStackTrace(); }
+        finally {
             try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Throwable t) {
-                // No-op
-            }
-            try {
-                if (response != null) {
-                    response.close();
-                }
-            } catch (Throwable t) {
-                // No-op
-            }
-
-            httpclient.close();
+                if (is != null) { is.close(); }
+                if (response != null) { response.close(); }
+                httpClient.close();
+            } catch (IOException e) { e.printStackTrace(); }
         }
-        System.out.println(results);
-        return results;
     }
 
-
-//
-//    public void getGet(String url) throws IOException {
-//            CloseableHttpResponse response = null;
-//            InputStream is = null;
-//            String results = null;
-//            CloseableHttpClient httpclient = HttpClients.createDefault();
-//
-//            try {
-//                HttpGet httpGet = new HttpGet(url);
-//                response = httpclient.execute(httpGet);
-//
-//                HttpEntity entity = response.getEntity();
-//                if (entity != null) {
-//                    is = entity.getContent();
-//                    StringWriter writer = new StringWriter();
-//                    IOUtils.copy(is, writer, "UTF-8");
-//                    results = writer.toString();
-//                }
-//
-//            } finally {
-//                try {
-//                    if (is != null) {
-//                        is.close();
-//                    }
-//                } catch (Throwable t) {
-//                    // No-op
-//                }
-//                try {
-//                    if (response != null) {
-//                        response.close();
-//                    }
-//                } catch (Throwable t) {
-//                    // No-op
-//                }
-//
-//                httpclient.close();
-//            }
-//            return results;
-//        }
-
-
-//    public void getMultiResponse(){
-//        response = httpclient.execute(httpGet);
-//
-//        HttpEntity entity = response.getEntity();
-//        if (entity != null) {
-//            is = entity.getContent();
-//            StringWriter writer = new StringWriter();
-//            IOUtils.copy(is, writer, "UTF-8");
-//            results = writer.toString();
-//        }
-//
-//    } finally {
-//        try {
-//            if (is != null) {
-//                is.close();
-//            }
-//        } catch (Throwable t) {
-//            // No-op
-//        }
-//        try {
-//            if (response != null) {
-//                response.close();
-//            }
-//        } catch (Throwable t) {
-//            // No-op
-//        }
-//
-//        httpclient.close();
-//    }
-//            return results;
-
+    public static String getVkApiRequestVersion() {
+        return VK_API_REQUEST_VERSION;
     }
+
+    public static String getVkApiRequestUrl() {
+        return VK_API_REQUEST_URL;
+    }
+
+    public static String getReplacement() { return REPLACEMENT; }
+}
 
 
 

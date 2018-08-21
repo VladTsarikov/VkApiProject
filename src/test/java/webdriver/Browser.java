@@ -27,8 +27,9 @@ public final class Browser {
 	private static final long SLEEP_THREAD_SLEEP = 250;
 	private static final long IMPLICITY_WAIT = 10;
 	private static final long DEFAULT_FRAME_TIMEOUT = 80;
+	private static final long DEFAULT_ELEMENT_CHANGE_TIMEOUT = 2;
 	private static final String DEFAULT_CONDITION_TIMEOUT = "defaultConditionTimeout";
-	private static final String DEFAULT_PAGE_LOAD_TIMEOUT = "defaultPageLoadTimeout";
+	private static final String DEFAULT_PAGE_LOAD_TIMEOUT = "defaultPageLoadTimeout";;
 	private static final String DEFAULT_SIKULI_TIMEOUT = "defaultSikuliTimeout";
 	private static final String DEFAULT_SIKULI_SIMILARITY = "defaultSikuliSimilarity";
 	private static final String URL_LOGIN_PAGE = "urlLoginPage";
@@ -64,6 +65,7 @@ public final class Browser {
 	// поля класса
 	private static String browserURL;
 	private static String timeoutForPageLoad;
+	private static String timeoutForElementChange;
 	private static String timeoutForCondition;
 	private static String timeoutForSikuli;
 	private static String similarityForSikuli;
@@ -209,6 +211,14 @@ public final class Browser {
 	 */
 	public static String getTimeoutForCondition() {
 		return timeoutForCondition;
+	}
+
+	/**
+	 * gets TimeoutForElementChange
+	 * @return timeoutForCondition
+	 */
+	public static long getDefaultElementChangeTimeout() {
+		return DEFAULT_ELEMENT_CHANGE_TIMEOUT;
 	}
 
 	/**

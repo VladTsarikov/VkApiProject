@@ -2,7 +2,9 @@ package framework.enums;
 
 public enum MainLeftMenuLabel {
 
-    MY_PAGE("pr"), NEWS("nwsf"), POSTS("msg");
+    MY_PAGE("pr"),
+    NEWS("nwsf"),
+    POSTS("msg");
 
     private String category;
 
@@ -10,7 +12,7 @@ public enum MainLeftMenuLabel {
         this.category = category;
     }
 
-    public String getMainLeftMenuLabelCategory() {
+    public String getLeftMenuLabelCategory() {
         return category;
     }
 }

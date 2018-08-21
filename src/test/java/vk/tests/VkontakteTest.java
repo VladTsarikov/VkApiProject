@@ -13,10 +13,12 @@ public class VkontakteTest extends BaseTest {
     private final static String USER_PASSWORD = prop.getProperty("credentials_password");
     private final static String USER_TOKEN = prop.getProperty("credentials_token");
     private final static String USER_ID = prop.getProperty("credentials_user_id");
+    private final static String INDIKATOR_EXIST_LIKE = "1";
+    private final static String ENCODING = "UTF-8";
     private final static String POST_TEXT = Long.toHexString(Double.doubleToLongBits(Math.random()));
     private final static String EDITION_TEXT = Long.toHexString(Double.doubleToLongBits(Math.random()));
     private final static String COMMENT_TEXT = Long.toHexString(Double.doubleToLongBits(Math.random()));
-    private final static String GET_REQUEST_TYPE = "GET";
+    private final static String UPLOAD_FILE_PATH = "src/main/resources/images/testImage.jpg";
 
     @Override
     public void runTest() {
@@ -28,31 +30,33 @@ public class VkontakteTest extends BaseTest {
 
         logStep(3,"OPENING NEWS PAGE AND SELECTING MY PAGE TAB...");
         NewsPage newsPage = new NewsPage();
-        newsPage.leftMainMenu.clicLeftMainMenuLabel(MY_PAGE);
+        newsPage.leftMainMenu.clickLeftMenuLabel(MY_PAGE);
 
         logStep(4,"OPENING MAIN USER PAGE..");
         MainUserPage mainUserPage = new MainUserPage();
 
         logStep(5,"ADDING POST WITH TEXT AND VERIFY THIS STEP...");
-        mainUserPage.addTextPost(USER_ID, POST_TEXT,GET_REQUEST_TYPE,USER_TOKEN);
-        assertTrue(mainUserPage.verifyPostForNecessaryText(mainUserPage.getLastPostId(),POST_TEXT),String.format("Text %s has not found",POST_TEXT));
-        //assertTrue(mainUserPage.verifyPostForNecessaryUser(mainUserPage.getLastPostId(),USER_ID),"Post does not belong this user");
+        String lastPostId = mainUserPage.addTextPost(USER_ID, POST_TEXT,USER_TOKEN);
+        assertEquals(String.format("Text %s has not found",POST_TEXT),mainUserPage.verifyPostForNecessaryText(lastPostId,POST_TEXT),POST_TEXT);
+        assertEquals(String.format("Post does not belong user with id: %s",USER_ID),mainUserPage.verifyPostForNecessaryUser(lastPostId),USER_ID);
 
-        logStep(6,"ADDING AND VERIFY PHOTO AND CHANGING TEXT IN POST...");
-        mainUserPage.editPost(USER_ID,mainUserPage.getLastPostId(),EDITION_TEXT,USER_TOKEN,GET_REQUEST_TYPE);
-        //assertTrue(mainUserPage.verifyPostForNecessaryText(mainUserPage.getLastPostId(),POST_TEXT),String.format("Text %s have not found",EDITION_TEXT)));
-        //assertTrue(mainUserPage.verifyPostForCorrectPhoto(),"Photo has not found");
+        logStep(6,"ADDING PHOTO AND CHANGING TEXT IN POST...");
+        mainUserPage.editPost(USER_ID,lastPostId,EDITION_TEXT,USER_TOKEN,UPLOAD_FILE_PATH,ENCODING);
 
-        //logStep(7,"ADDING AND VERIFY POST COMMENT...");
-       // mainUserPage.addComment(USER_ID,mainUserPage.getLastPostId(),COMMENT_TEXT,USER_TOKEN,GET_REQUEST_TYPE);
-        //assertTrue(mainUserPage.verifyComment(mainUserPage.getLastPostId(),USER_ID),String.format("Text %s has not found",COMMENT_TEXT));
+        logStep(7,"VERIFY PHOTO AND TEXT IN POST...");
+        assertEquals(String.format("Text %s have not found",EDITION_TEXT),mainUserPage.verifyPostForNecessaryText(lastPostId,EDITION_TEXT),EDITION_TEXT);
+        assertTrue(mainUserPage.verifyPostForCorrectPhoto(USER_ID,lastPostId),"Photo has not found");
 
-       // logStep(8,"ADDING AND VERIFY POST LIKE...");
-       // mainUserPage.addPostLike(mainUserPage.getLastPostId(), USER_ID);
-        assertTrue(mainUserPage.verifyIsPostLiked(mainUserPage.getLastPostId(),USER_ID,USER_TOKEN,GET_REQUEST_TYPE),"Post has not had 'like'");
+        logStep(8,"ADDING AND VERIFY POST COMMENT...");
+        mainUserPage.addComment(USER_ID,lastPostId,COMMENT_TEXT,USER_TOKEN);
+        assertEquals(String.format("Comment %s by user with id:%s has not found",COMMENT_TEXT,USER_ID),mainUserPage.verifyComment(lastPostId),USER_ID);
 
-        //logStep(9,"DELETE POST AND VERIFY THIS OPTION...");
-        //mainUserPage.deletePost(USER_ID,mainUserPage.getLastPostId(),USER_TOKEN,GET_REQUEST_TYPE);
-        //assertFalse(mainUserPage.verifyIsPostDelete(USER_ID,mainUserPage.getLastPostId()),"Post has not deleted");
+        logStep(9,"ADDING AND VERIFY POST LIKE...");
+        mainUserPage.addPostLike(lastPostId, USER_ID);
+        assertEquals("Post has not had 'like'",mainUserPage.verifyIsPostLiked(lastPostId,USER_ID,USER_TOKEN),INDIKATOR_EXIST_LIKE);
+
+        logStep(10,"DELETE POST AND VERIFY THIS OPTION...");
+        mainUserPage.deletePost(USER_ID,lastPostId,USER_TOKEN);
+        assertFalse(mainUserPage.verifyIsPostDelete(USER_ID,lastPostId),"Post has not deleted");
     }
 }

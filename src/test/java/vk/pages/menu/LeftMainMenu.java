@@ -7,10 +7,8 @@ import webdriver.elements.*;
 public class LeftMainMenu {
 
     private String menuLabel = "//li[contains(@id,'%s')]//a";
-    private String path;
 
-    public void clicLeftMainMenuLabel(MainLeftMenuLabel mainLeftMenuLabel) {
-        path = String.format(menuLabel, mainLeftMenuLabel.getMainLeftMenuLabelCategory());
-        new Label(By.xpath(path), mainLeftMenuLabel.getMainLeftMenuLabelCategory() + " Label").clickAndWait();
+    public void clickLeftMenuLabel(MainLeftMenuLabel mainLeftMenuLabel) {
+        new Label(By.xpath(String.format(menuLabel, mainLeftMenuLabel.getLeftMenuLabelCategory())), mainLeftMenuLabel.getLeftMenuLabelCategory() + " Label").clickAndWait();
     }
 }
