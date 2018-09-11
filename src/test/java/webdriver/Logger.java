@@ -8,7 +8,7 @@ import org.testng.Reporter;
 public final class Logger {
 
 
-	private static final Locale DEF_LOCALE = Locale.RU;
+	private static final Locale DEF_LOCALE = Locale.EN;
 	private static final String AQA_LOCALE = "aqa.locale";
 	private static final org.apache.log4j.Logger LOG4J = org.apache.log4j.Logger.getLogger(Logger.class);
 	private static Logger instance = null;

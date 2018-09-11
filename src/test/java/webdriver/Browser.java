@@ -79,8 +79,7 @@ public final class Browser {
 	private static String ieLocalRun;
 	private static String withoutFlash;
 
-	public static final Browsers currentBrowser =
-            Browsers.valueOf(System.getProperty(BROWSER_PROP, props.getProperty(BROWSER_PROP, BROWSER_BY_DEFAULT).toUpperCase()));
+	public static final Browsers currentBrowser = Browsers.valueOf(System.getProperty("browser").toUpperCase());
 
 	public static final String stageProperty = System.getProperty(STAGE, STAGE_A);
 	/**

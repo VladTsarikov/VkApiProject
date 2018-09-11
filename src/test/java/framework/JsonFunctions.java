@@ -10,7 +10,9 @@ public class JsonFunctions {
         try {
             JSONObject object1 = new JSONObject(getResponseBody(parseString,firstParam));
             param = object1.getString(secondParam);
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return param;
     }
 
@@ -19,7 +21,9 @@ public class JsonFunctions {
         try {
             JSONObject object = new JSONObject(parseString);
             body = object.getString(firstParam);
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return body;
     }
 }

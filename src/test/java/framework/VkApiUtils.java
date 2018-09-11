@@ -24,17 +24,19 @@ public class VkApiUtils {
     private final static String VK_API_REQUEST_URL = "https://api.vk.com/method/";
     private CloseableHttpResponse response = null;
     private CloseableHttpClient httpClient = HttpClients.createDefault();
-    private InputStream is = null;
+    private InputStream inputStream = null;
     private String results = null;
 
     public String sendGetRequest(String requestUrl){
         try {
-            URL obj = new URL(requestUrl);
-            connection = (HttpURLConnection) obj.openConnection();
+            URL url = new URL(requestUrl);
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(GET_REQUEST_TYPE);
             connection.setRequestProperty(CONTENT_TYPE_NAME, GET_CONTENT_TYPE);
             connection.connect();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return obtainGetResponse(connection);
     }
 
@@ -54,12 +56,16 @@ public class VkApiUtils {
         try {
             responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) { response.append(inputLine); }
-                in.close();
+                while ((inputLine = bufferedReader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                bufferedReader.close();
             }
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return response.toString();
     }
 
@@ -68,18 +74,26 @@ public class VkApiUtils {
             response = httpClient.execute(httppost);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                is = entity.getContent();
+                inputStream = entity.getContent();
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(is, writer, INPUT_STREAM_ENCODING);
+                IOUtils.copy(inputStream, writer, INPUT_STREAM_ENCODING);
                 results = writer.toString();
             }
-        } catch (IOException e1) { e1.printStackTrace(); }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         finally {
             try {
-                if (is != null) { is.close(); }
-                if (response != null) { response.close(); }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (response != null) {
+                    response.close();
+                }
                 httpClient.close();
-            } catch (IOException e) { e.printStackTrace(); }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -93,7 +107,6 @@ public class VkApiUtils {
 
     public static String getReplacement() { return REPLACEMENT; }
 }
-
 
 
 
