@@ -339,6 +339,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.5</version>
                 <configuration>
